@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Invoice, InvoiceStatus } from '@/lib/types';
 import StatusBadge from '@/components/StatusBadge';
@@ -10,6 +11,7 @@ export default function InvoicesPage() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const load = () => {
     setLoading(true);
@@ -40,7 +42,6 @@ export default function InvoicesPage() {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="flex gap-4 mb-6">
         <input
           type="text"
@@ -62,7 +63,6 @@ export default function InvoicesPage() {
         </select>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
@@ -81,7 +81,11 @@ export default function InvoicesPage() {
             ) : invoices.length === 0 ? (
               <tr><td colSpan={6} className="text-center py-12 text-gray-400">Aucune facture trouvée</td></tr>
             ) : invoices.map((inv) => (
-              <tr key={inv.id} className="hover:bg-gray-50 transition-colors">
+              <tr
+                key={inv.id}
+                onClick={() => router.push(`/dashboard/invoices/${inv.id}`)}
+                className="hover:bg-gray-50 transition-colors cursor-pointer"
+              >
                 <td className="px-6 py-4 text-sm font-mono text-gray-600">{inv.reference}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">{inv.customerName}</td>
                 <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{inv.description}</td>
