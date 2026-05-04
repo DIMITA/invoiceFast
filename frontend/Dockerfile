@@ -5,7 +5,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 COPY package*.json ./
 RUN npm install --legacy-peer-deps --no-audit --no-fund
 COPY . .
-RUN npm run build
+RUN node node_modules/next/dist/bin/next build
 
 FROM node:20-alpine
 WORKDIR /app

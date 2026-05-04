@@ -1,9 +1,10 @@
 FROM node:20 AS builder
 WORKDIR /app
+RUN npm install -g typescript@5 --no-audit --no-fund
 COPY package*.json ./
 RUN npm install --legacy-peer-deps --no-audit --no-fund
 COPY . .
-RUN ./node_modules/.bin/tsc -p tsconfig.json
+RUN tsc -p tsconfig.json
 
 FROM node:20-alpine
 WORKDIR /app
