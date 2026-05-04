@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { clearAuth, getUser } from '@/lib/auth';
 
 const nav = [
   { label: 'Dashboard', href: '/dashboard', icon: '◎' },
@@ -11,6 +12,14 @@ const nav = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const user = getUser();
+
+  const logout = () => {
+    clearAuth();
+    router.replace('/login');
+  };
+
   return (
     <aside className="w-60 min-h-screen bg-slate-900 flex flex-col text-white">
       <div className="px-6 py-6 border-b border-slate-700">
@@ -35,8 +44,20 @@ export default function Sidebar() {
           );
         })}
       </nav>
-      <div className="px-6 py-4 border-t border-slate-700 text-xs text-slate-500">
-        Phase 1 — Mock Data
+      <div className="px-6 py-4 border-t border-slate-700">
+        {user && (
+          <div className="mb-3">
+            <p className="text-xs font-medium text-white truncate">{user.name}</p>
+            <p className="text-xs text-slate-400 truncate">{user.email}</p>
+          </div>
+        )}
+        <button
+          onClick={logout}
+          className="w-full text-left text-xs text-slate-400 hover:text-white transition-colors py-1"
+        >
+          → Déconnexion
+        </button>
+        <p className="text-xs text-slate-600 mt-2">Phase 1 — Mock Data</p>
       </div>
     </aside>
   );

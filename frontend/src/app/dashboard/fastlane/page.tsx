@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Customer, ParsedInvoice } from '@/lib/types';
+import { useToast } from '@/components/Toast';
 
 const examples = [
   'Facture 1200€ client Dupont pour prestation développement',
@@ -13,6 +14,7 @@ const examples = [
 
 export default function FastlanePage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [input, setInput] = useState('');
   const [parsed, setParsed] = useState<ParsedInvoice | null>(null);
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -32,8 +34,9 @@ export default function FastlanePage() {
       setCustomers(cList);
       if (cList.length > 0) setSelectedCustomerId(cList[0].id);
       setStep('confirm');
+      toast('Facture analysée avec succès', 'info');
     } catch {
-      alert('Erreur de parsing. Backend disponible?');
+      toast('Erreur de parsing. Backend disponible ?', 'error');
     } finally {
       setLoading(false);
     }
@@ -48,9 +51,10 @@ export default function FastlanePage() {
         amount: parsed.amount,
         description: parsed.description,
       });
+      toast('Facture créée avec succès !');
       router.push('/dashboard/invoices');
     } catch {
-      alert('Erreur de création.');
+      toast('Erreur lors de la création', 'error');
       setCreating(false);
     }
   };
